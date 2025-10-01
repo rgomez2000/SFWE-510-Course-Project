@@ -99,7 +99,6 @@ Catalog (Product)
 Base URL: http://localhost:8081/api/products
 
 | Method     | Path                          | Notes |
-| :----------- | :---------------------------------------- |
 | GET | /         | Lists the products |
 | GET   | /{id} | Gets the product by its UUID |
 | POST   | /            | Creates a new product |
@@ -110,12 +109,14 @@ Orders
 
 Base URL: http://localhost:8082/api/orders
 
-Method	Path	Notes
-GET	/	Lists the orders
-GET	/{id}	Gets the order by its UUID
-POST	/	Creates an order
-PUT	/{id}	Updates selected fields within order table
-DELETE	/{id}	Deletes an order
+
+
+| Method |	Path |	Notes |
+| GET |	/ |	Lists the orders |
+| GET |	/{id} |	Gets the order by its UUID |
+| POST |	/ |	Creates an order |
+| PUT |	/{id} |	Updates selected fields within order table |
+| DELETE |	/{id} |	Deletes an order |
 
 # Postman Workspace
 With the Postman collection imported to Postman Desktop:
