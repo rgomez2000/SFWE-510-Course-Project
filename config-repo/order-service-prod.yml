@@ -1,13 +1,21 @@
-server:
-  port: 8082
 spring:
   datasource:
-    url: jdbc:postgresql://order-db:5432/orderdb_prod
+    url: jdbc:postgresql://order-db:5432/orderdb_dev
     username: orders
     password: orders
   jpa:
     hibernate:
       ddl-auto: update
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env
+
 logging:
   level:
-    org.hibernate.SQL: warn
+    root: WARN
+
+app:
+  banner: "ORDERS running with PROD profile"

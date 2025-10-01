@@ -1,7 +1,7 @@
 services:
   configserver:
     build:
-      context: ..                    # repo root
+      context: ..
       dockerfile: configserver/Dockerfile
     image: app/configserver:0.1.0
     container_name: configserver
