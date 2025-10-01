@@ -1,10 +1,10 @@
 # SFWE-510-Course-Project
 
-#Overview
+# Overview
 
 This project is built for my SFWE 510 course, developing a cloud-native e-commerce system. The goal is a modular microservices setup with a configuration server, two domain services, CRUD REST APIs, containerization, and two runtime profiles (dev and prod).
 
-#Services
+# Services
 
 configserver – Spring Cloud Config Server (used for the native backend)
 
@@ -12,7 +12,7 @@ catalog-service – Product CRUD (including Postgres)
 
 order-service – Order CRUD (including Postgres)
 
-#Ports
+# Ports
 
 Config Server: 8888
 
@@ -24,7 +24,7 @@ Postgres (catalog): host 5433 → container 5432
 
 Postgres (orders): host 5434 → container 5432
 
-#Tech Stack
+# Tech Stack
 
 Java 17, Maven
 
@@ -46,7 +46,7 @@ Java 17 and Maven (for local builds)
 
 Postman (Desktop App)
 
-#Build (for local JARs)
+# Build (for local JARs)
 
 from repo root
 mvn -DskipTests clean package
@@ -70,7 +70,7 @@ catalog-service = 0.0.0.0:8081
 order-service = 0.0.0.0:8082
 
 
-#Configuration (Profiles)
+# Configuration (Profiles)
 
 Config Server serves YAML from config-repo/. Two profiles are provided:
 
@@ -90,7 +90,7 @@ Then rebuild/restart the apps:
 docker compose up -d --build catalog-service order-service
 
 
-#REST APIs
+# REST APIs
 Catalog (Product)
 
 Base URL: http://localhost:8081/api/products
@@ -113,7 +113,7 @@ POST	/	Creates an order
 PUT	/{id}	Updates selected fields within order table
 DELETE	/{id}	Deletes an order
 
-#Postman Workspace
+# Postman Workspace
 With the Postman collection imported to Postman Desktop:
   Run the folders in order: Health, Catalog, Orders.
   “Create” requests capture productId / orderId for subsequent calls. The order create uses {{$timestamp}} to avoid duplicate order numbers.
