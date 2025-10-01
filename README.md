@@ -47,7 +47,8 @@ Java 17 and Maven (for local builds)
 Postman (Desktop App)
 
 Build (for local JARs)
-# from repo root
+
+from repo root
 mvn -DskipTests clean package
 
 
