@@ -98,12 +98,13 @@ Catalog (Product)
 
 Base URL: http://localhost:8081/api/products
 
-Method	Path	Notes
-GET	/	Lists the products
-GET	/{id}	Gets the product by its UUID
-POST	/	Creates a new product
-PUT	/{id}	Updates selected fields within product table
-DELETE	/{id}	Deletes a product
+| Method     | Path                          | Notes |
+| :----------- | :---------------------------------------- |
+| GET | /         | Lists the products |
+| GET   | /{id} | Gets the product by its UUID |
+| POST   | /            | Creates a new product |
+| PUT   | /{id}            | Updates selected fields within product table |
+| DELETE  | /{id}           | Deletes a product |
 
 Orders
 
