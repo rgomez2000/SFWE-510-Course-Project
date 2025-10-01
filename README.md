@@ -48,16 +48,19 @@ Postman (Desktop App)
 
 # Build (for local JARs)
 
-from repo root
+from repo root:
+
 mvn -DskipTests clean package
 
 
 This produces bootable JARs under each module’s target/.
 
 
-Run (Docker Compose)
+Run (Docker Compose):
 cd docker
+
 docker compose up -d --build
+
 docker compose ps
 
 
