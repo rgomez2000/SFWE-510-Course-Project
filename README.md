@@ -38,7 +38,7 @@ Docker / Docker Compose
 
 Postman for API verification
 
-#Prerequisites
+# Prerequisites
 
 Docker Desktop (or compatible Docker Engine)
 
