@@ -1,0 +1,83 @@
+services:
+  configserver:
+    build:
+      context: ..                    # repo root
+      dockerfile: configserver/Dockerfile
+    image: app/configserver:0.1.0
+    container_name: configserver
+    ports: ["8888:8888"]
+    environment:
+      SPRING_PROFILES_ACTIVE: native
+    volumes:
+      - ../config-repo:/config-repo:ro
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8888/actuator/health" ]
+      interval: 5s
+      timeout: 2s
+      retries: 12
+      start_period: 5s
+
+  catalog-db:
+    image: postgres:16
+    container_name: catalog-db
+    environment:
+      POSTGRES_USER: catalog
+      POSTGRES_PASSWORD: catalog
+      POSTGRES_DB: catalogdb_dev
+    ports: ["5433:5432"]
+    volumes:
+      - pg_catalog_data:/var/lib/postgresql/data
+
+  order-db:
+    image: postgres:16
+    container_name: order-db
+    environment:
+      POSTGRES_USER: orders
+      POSTGRES_PASSWORD: orders
+      POSTGRES_DB: orderdb_dev
+    ports: ["5434:5432"]
+    volumes:
+      - pg_order_data:/var/lib/postgresql/data
+
+  catalog-service:
+    build:
+      context: ..
+      dockerfile: catalog-service/Dockerfile
+    image: app/catalog-service:0.1.0
+    container_name: catalog-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CONFIG_IMPORT: optional:configserver:http://configserver:8888/
+      SPRING_CLOUD_CONFIG_FAIL_FAST: "true"
+      SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS: "10"
+      SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: "1000"
+      SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER: "1.5"
+    ports: ["8081:8081"]
+    depends_on:
+      configserver:
+        condition: service_healthy
+
+
+  order-service:
+    build:
+      context: ..
+      dockerfile: order-service/Dockerfile
+    image: app/order-service:0.1.0
+    container_name: order-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CONFIG_IMPORT: optional:configserver:http://configserver:8888/
+      SPRING_CLOUD_CONFIG_FAIL_FAST: "true"
+      SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS: "10"
+      SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: "1000"
+      SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER: "1.5"
+    ports: ["8082:8082"]
+    depends_on:
+      configserver:
+        condition: service_healthy
+
+
+volumes:
+  pg_catalog_data:
+  pg_order_data:
+
