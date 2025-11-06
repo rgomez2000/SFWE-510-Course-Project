@@ -18,10 +18,14 @@ public class ProductController {
     public List<Product> all() { return repo.findAll(); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getOne(@PathVariable("id") UUID id) {
-        return repo.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Product> getOne(@PathVariable("id") UUID id,
+                                          @RequestParam(name = "slow", defaultValue = "false") boolean slow,
+                                          @RequestParam(name = "fail", defaultValue = "false") boolean fail) {
+        if (fail) throw new RuntimeException("Simulated failure");
+        if (slow) {
+            try { Thread.sleep(5000); } catch (InterruptedException ignored) {}
+        }
+        return repo.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping

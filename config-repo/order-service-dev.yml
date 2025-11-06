@@ -20,3 +20,51 @@ eureka:
       defaultZone: http://eurekaserver:8761/eureka
   instance:
     prefer-ip-address: true
+
+management:
+  endpoints.web.exposure.include: health,info,env,metrics,loggers,threaddump
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      catalogService:
+        registerHealthIndicator: true
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.ResourceAccessException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+
+  retry:
+    instances:
+      catalogService:
+        maxAttempts: 3
+        waitDuration: 300ms
+        retryExceptions:
+          - org.springframework.web.client.ResourceAccessException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+
+  ratelimiter:
+    instances:
+      catalogService:
+        limitForPeriod: 10
+        limitRefreshPeriod: 1s
+        timeoutDuration: 0
+
+  bulkhead:
+    instances:
+      catalogService:
+        maxConcurrentCalls: 10
+        maxWaitDuration: 0
+
+  timelimiter:
+    instances:
+      catalogService:
+        timeoutDuration: 2s

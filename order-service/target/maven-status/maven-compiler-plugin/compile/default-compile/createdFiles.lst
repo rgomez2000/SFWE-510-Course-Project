@@ -1,6 +1,12 @@
 com\example\order\OrderRepository.class
-com\example\order\Order.class
+com\example\order\OrderPlacementController$ItemReq.class
+com\example\order\RestClientConfig.class
 com\example\order\OrderController.class
+com\example\order\CatalogClient.class
+com\example\order\OrderServiceApp.class
+com\example\order\ProductSummary.class
+com\example\order\Order.class
+com\example\order\OrderPlacementController$PlaceOrderReq.class
 com\example\order\OrderItem.class
 com\example\order\OrderItemRepository.class
-com\example\order\OrderServiceApp.class
+com\example\order\OrderPlacementController.class
