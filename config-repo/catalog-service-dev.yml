@@ -1,0 +1,25 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    url: jdbc:postgresql://catalog-db:5432/catalogdb_dev
+    username: catalog
+    password: catalog
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.format_sql: true
+      hibernate.jdbc.lob.non_contextual_creation: true
+logging:
+  level:
+    org.hibernate.SQL: debug
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eurekaserver:8761/eureka
+  instance:
+    prefer-ip-address: true

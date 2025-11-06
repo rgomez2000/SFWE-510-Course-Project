@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://order-db:5432/orderdb_dev
+    username: orders
+    password: orders
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env
+
+logging:
+  level:
+    root: WARN
+
+app:
+  banner: "ORDERS running with PROD profile"
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eurekaserver:8761/eureka
+  instance:
+    prefer-ip-address: true

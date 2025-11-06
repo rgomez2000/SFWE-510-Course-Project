@@ -1,0 +1,22 @@
+server:
+  port: 8082
+spring:
+  datasource:
+    url: jdbc:postgresql://order-db:5432/orderdb_dev
+    username: orders
+    password: orders
+  jpa:
+    hibernate:
+      ddl-auto: update
+logging:
+  level:
+    org.hibernate.SQL: debug
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eurekaserver:8761/eureka
+  instance:
+    prefer-ip-address: true
