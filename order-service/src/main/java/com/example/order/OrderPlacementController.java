@@ -29,6 +29,7 @@ public class OrderPlacementController {
                                        @RequestParam(name = "slow", defaultValue = "false") boolean slow,
                                        @RequestParam(name = "fail", defaultValue = "false") boolean fail) {
 
+        // Create the order shell first
         Order o = new Order();
         o.setOrderNumber(req.orderNumber());
         o.setUserId(req.userId());
@@ -38,25 +39,42 @@ public class OrderPlacementController {
         o = orders.save(o);
 
         BigDecimal total = BigDecimal.ZERO;
+
         if (req.items() != null) {
             for (ItemReq ir : req.items()) {
-                ProductSummary ps = catalog.getProduct(ir.productId(), slow, fail);
+
+
+                BigDecimal price = BigDecimal.ZERO;
+                String currency = "USD";
+                String name = "Unavailable";
+                try {
+                    ProductSummary ps = catalog.getProduct(ir.productId(), slow, fail);
+                    if (ps != null) {
+                        if (ps.getName() != null) name = ps.getName();
+                        if (ps.getPriceCurrency() != null) currency = ps.getPriceCurrency();
+                        if (ps.getPriceAmount() != null) price = ps.getPriceAmount();
+                    }
+                } catch (Exception ex) {
+
+                }
+                int qty = (ir.qty() != null ? ir.qty() : 1);
 
                 OrderItem oi = new OrderItem();
                 oi.setOrder(o);
                 oi.setProductId(ir.productId());
-                oi.setProductNameSnapshot(ps.getName());
-                oi.setUnitPriceAmountSnapshot(ps.getPriceAmount() != null ? ps.getPriceAmount() : BigDecimal.ZERO);
-                oi.setUnitPriceCurrencySnapshot(ps.getPriceCurrency() != null ? ps.getPriceCurrency() : "USD");
-                oi.setQty(ir.qty() != null ? ir.qty() : 1);
+                oi.setProductNameSnapshot(name);
+                oi.setUnitPriceAmountSnapshot(price);
+                oi.setUnitPriceCurrencySnapshot(currency);
+                oi.setQty(qty);
 
-                BigDecimal line = oi.getUnitPriceAmountSnapshot().multiply(BigDecimal.valueOf(oi.getQty()));
+                BigDecimal line = price.multiply(BigDecimal.valueOf(qty));
                 oi.setLineTotalAmount(line);
 
                 total = total.add(line);
                 items.save(oi);
             }
         }
+
         o.setTotalAmount(total);
         o.setStatus("CREATED");
         return ResponseEntity.ok(orders.save(o));

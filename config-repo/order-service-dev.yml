@@ -21,35 +21,43 @@ eureka:
   instance:
     prefer-ip-address: true
 
+catalog:
+  base-url: http://catalog-service:8081
+
 management:
-  endpoints.web.exposure.include: health,info,env,metrics,loggers,threaddump
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env,metrics,loggers,circuitbreakers,ratelimiters,threaddump
+
+management.health.circuitbreakers.enabled: true
+
+management.endpoint:
+  circuitbreakers.enabled: true
+  ratelimiters.enabled: true
 
 resilience4j:
   circuitbreaker:
     instances:
       catalogService:
-        registerHealthIndicator: true
-        slidingWindowSize: 5
-        minimumNumberOfCalls: 5
-        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 6
+        minimumNumberOfCalls: 4
+        failureRateThreshold: 40
+        slowCallDurationThreshold: 1s
+        slowCallRateThreshold: 50
         waitDurationInOpenState: 10s
-        failureRateThreshold: 50
+        permittedNumberOfCallsInHalfOpenState: 2
         automaticTransitionFromOpenToHalfOpenEnabled: true
         recordExceptions:
-          - org.springframework.web.client.HttpServerErrorException
           - org.springframework.web.client.ResourceAccessException
-          - java.io.IOException
-          - java.util.concurrent.TimeoutException
+          - java.net.SocketTimeoutException
+          - org.springframework.web.client.HttpServerErrorException
 
   retry:
     instances:
       catalogService:
-        maxAttempts: 3
-        waitDuration: 300ms
-        retryExceptions:
-          - org.springframework.web.client.ResourceAccessException
-          - java.io.IOException
-          - java.util.concurrent.TimeoutException
+        maxAttempts: 1
 
   ratelimiter:
     instances:
@@ -61,10 +69,14 @@ resilience4j:
   bulkhead:
     instances:
       catalogService:
+        type: SEMAPHORE
         maxConcurrentCalls: 10
         maxWaitDuration: 0
 
   timelimiter:
     instances:
       catalogService:
-        timeoutDuration: 2s
+        timeoutDuration: 1s
+
+  resilience:
+    simulate-random-latency: true
