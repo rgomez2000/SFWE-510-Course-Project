@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: gatewayserver
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+          lower-case-service-id: true
+      routes:
+        - id: catalog-route
+          uri: lb://catalog-service
+          predicates:
+            - Path=/catalog/**
+          filters:
+            - RewritePath=/catalog/(?<segment>.*), /${segment}
+        - id: order-route
+          uri: lb://order-service
+          predicates:
+            - Path=/orders/**
+          filters:
+            - RewritePath=/orders/(?<segment>.*), /${segment}
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eurekaserver:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,gateway,env,configprops
+  endpoint:
+    health:
+      show-details: always
+    gateway:
+      enabled: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+
