@@ -2,10 +2,14 @@ package com.example.order;
 
 import com.example.order.CatalogClient;
 import com.example.order.ProductSummary;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +21,8 @@ public class OrderPlacementController {
     private final OrderItemRepository items;
     private final CatalogClient catalog;
 
+    private static final SecureRandom RAND = new SecureRandom();
+
     public OrderPlacementController(OrderRepository orders, OrderItemRepository items, CatalogClient catalog) {
         this.orders = orders; this.items = items; this.catalog = catalog;
     }
@@ -27,12 +33,17 @@ public class OrderPlacementController {
     @PostMapping("/place")
     public ResponseEntity<Order> place(@RequestBody PlaceOrderReq req,
                                        @RequestParam(name = "slow", defaultValue = "false") boolean slow,
-                                       @RequestParam(name = "fail", defaultValue = "false") boolean fail) {
+                                       @RequestParam(name = "fail", defaultValue = "false") boolean fail,
+                                       @AuthenticationPrincipal Jwt jwt) {
 
-        // Create the order shell first
+        String uid = resolveUserId(jwt);
+        if (uid == null || uid.isBlank()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         Order o = new Order();
-        o.setOrderNumber(req.orderNumber());
-        o.setUserId(req.userId());
+        o.setUserId(uid);
+        o.setOrderNumber(generateUniqueOrderNo());
         o.setStatus("PENDING");
         o.setCurrency(req.currency() != null ? req.currency() : "USD");
         o.setTotalAmount(BigDecimal.ZERO);
@@ -42,11 +53,10 @@ public class OrderPlacementController {
 
         if (req.items() != null) {
             for (ItemReq ir : req.items()) {
-
-
                 BigDecimal price = BigDecimal.ZERO;
                 String currency = "USD";
                 String name = "Unavailable";
+
                 try {
                     ProductSummary ps = catalog.getProduct(ir.productId(), slow, fail);
                     if (ps != null) {
@@ -54,9 +64,10 @@ public class OrderPlacementController {
                         if (ps.getPriceCurrency() != null) currency = ps.getPriceCurrency();
                         if (ps.getPriceAmount() != null) price = ps.getPriceAmount();
                     }
-                } catch (Exception ex) {
-
+                } catch (Exception ignored) {
+                    // Resilience demo: fallback leaves price as 0
                 }
+
                 int qty = (ir.qty() != null ? ir.qty() : 1);
 
                 OrderItem oi = new OrderItem();
@@ -78,5 +89,26 @@ public class OrderPlacementController {
         o.setTotalAmount(total);
         o.setStatus("CREATED");
         return ResponseEntity.ok(orders.save(o));
+    }
+
+    private String resolveUserId(Jwt jwt) {
+        if (jwt == null) return null;
+        String preferred = jwt.getClaimAsString("preferred_username");
+        if (preferred != null && !preferred.isBlank()) return preferred;
+        return jwt.getSubject(); // fallback to sub
+    }
+
+    private String randomOrderNo() {
+        return "ORD-" + String.format("%08d", RAND.nextInt(100_000_000));
+    }
+
+    private String generateUniqueOrderNo() {
+        String on;
+        int tries = 0;
+        do {
+            on = randomOrderNo();
+            tries++;
+        } while (orders.existsByOrderNumber(on) && tries < 5);
+        return on;
     }
 }

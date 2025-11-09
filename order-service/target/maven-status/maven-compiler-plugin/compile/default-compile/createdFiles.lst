@@ -7,6 +7,7 @@ com\example\order\OrderServiceApp.class
 com\example\order\ProductSummary.class
 com\example\order\Order.class
 com\example\order\OrderPlacementController$PlaceOrderReq.class
+com\example\order\security\SecurityConfig.class
 com\example\order\OrderItem.class
 com\example\order\OrderItemRepository.class
 com\example\order\OrderPlacementController.class

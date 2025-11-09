@@ -1,6 +1,11 @@
 server:
   port: 8082
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/mia
   datasource:
     url: jdbc:postgresql://order-db:5432/orderdb_dev
     username: orders

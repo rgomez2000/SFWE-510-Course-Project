@@ -17,6 +17,21 @@ services:
       retries: 12
       start_period: 5s
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: [ "start-dev" ]
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8083:8080"
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
   eurekaserver:
     build:
       context: ..

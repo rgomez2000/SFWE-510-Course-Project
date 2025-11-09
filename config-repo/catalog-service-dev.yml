@@ -1,6 +1,11 @@
 server:
   port: 8081
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/mia
   datasource:
     url: jdbc:postgresql://catalog-db:5432/catalogdb_dev
     username: catalog

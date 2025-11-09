@@ -1,12 +1,16 @@
 spring:
   application:
     name: gatewayserver
-
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://keycloak:8080/realms/mia/protocol/openid-connect/certs
   cloud:
     gateway:
       discovery:
         locator:
-          enabled: false
+          enabled: true
           lower-case-service-id: true
       routes:
         - id: catalog-route
@@ -21,6 +25,14 @@ spring:
             - Path=/orders/**
           filters:
             - RewritePath=/orders/(?<segment>.*), /${segment}
+        - id: keycloak-proxy
+          uri: http://keycloak:8080
+          predicates:
+            - Path=/kc/**
+          filters:
+            - StripPrefix=1
+            - RemoveRequestHeader=Cookie
+            - RemoveResponseHeader=Set-Cookie
 
 eureka:
   client:

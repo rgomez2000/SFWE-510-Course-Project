@@ -32,7 +32,22 @@ public class Order {
 
     @PrePersist
     void onCreate() {
-        if (createdAt == null) createdAt = Instant.now();
+        if (this.createdAt == null) {
+            this.createdAt = Instant.now();
+        }
+        if (this.orderNumber == null || this.orderNumber.isBlank()) {
+            this.orderNumber = "ORD-" + String.format("%08d",
+                    java.util.concurrent.ThreadLocalRandom.current().nextInt(100_000_000));
+        }
+        if (this.totalAmount == null) {
+            this.totalAmount = BigDecimal.ZERO;
+        }
+        if (this.currency == null || this.currency.isBlank()) {
+            this.currency = "USD";
+        }
+        if (this.status == null || this.status.isBlank()) {
+            this.status = "DRAFT";
+        }
     }
 
     //  getters and setters
