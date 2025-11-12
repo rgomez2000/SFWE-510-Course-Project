@@ -1,0 +1,207 @@
+{
+	"id": "4360a010-8dca-437d-868c-2588c4e4b3fa",
+	"name": "Project Phase 2 Environment",
+	"values": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"enabled": true
+		},
+		{
+			"key": "eureka_url",
+			"value": "http://localhost:8761",
+			"enabled": true
+		},
+		{
+			"key": "kc_base",
+			"value": "{{base_url}}/kc",
+			"enabled": true
+		},
+		{
+			"key": "realm",
+			"value": "mia",
+			"enabled": true
+		},
+		{
+			"key": "token_url",
+			"value": "{{kc_base}}/realms/{{realm}}/protocol/openid-connect/token",
+			"enabled": true
+		},
+		{
+			"key": "admin_users_url",
+			"value": "{{kc_base}}/admin/realms/{{realm}}/users",
+			"enabled": true
+		},
+		{
+			"key": "client_id",
+			"value": "postman-client",
+			"enabled": true
+		},
+		{
+			"key": "client_secret",
+			"value": "zN9RaMBVc2p0Puvv3jGRPFotFjHxAWnw",
+			"enabled": true
+		},
+		{
+			"key": "admin_client_id",
+			"value": "admin-cli-local",
+			"enabled": true
+		},
+		{
+			"key": "admin_client_secret",
+			"value": "L8hBek0ykYGgOMmD7wqZ9CKJjlMjkBOG",
+			"enabled": true
+		},
+		{
+			"key": "alice_username",
+			"value": "alice",
+			"enabled": true
+		},
+		{
+			"key": "alice_password",
+			"value": "password",
+			"enabled": true
+		},
+		{
+			"key": "bob_username",
+			"value": "bob",
+			"enabled": true
+		},
+		{
+			"key": "bob_password",
+			"value": "password",
+			"enabled": true
+		},
+		{
+			"key": "new_username",
+			"value": "newuser",
+			"enabled": true
+		},
+		{
+			"key": "new_email",
+			"value": "newuser@example.com",
+			"enabled": true
+		},
+		{
+			"key": "new_password",
+			"value": "NewPass!123",
+			"enabled": true
+		},
+		{
+			"key": "reset_password",
+			"value": "ResetMe!123",
+			"enabled": true
+		},
+		{
+			"key": "sample_product_id",
+			"value": "1",
+			"enabled": true
+		},
+		{
+			"key": "user_access_token",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJmM1RfeHpibHh1NXlFemcySy1pcmxGekp2RHRuMFJCLUJtcktzcG1qTWxnIn0.eyJleHAiOjE3NjI2NzgxODgsImlhdCI6MTc2MjY3Nzg4OCwianRpIjoiYTNmMjdmNjktNjIxNS00Mjk2LTkyZTYtMDM2NjlkYzU3NjMxIiwiaXNzIjoiaHR0cDovL2tleWNsb2FrOjgwODAvcmVhbG1zL21pYSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiIzNzY4ZDc2Ny01Y2NjLTRhYmMtYTAyZS05MWUxNWI1OGQwMGEiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJwb3N0bWFuLWNsaWVudCIsInNpZCI6IjhlYmZhMjgyLTNmNWMtNGNmYy1iNDc1LWIyMzRiODc1OTQ1OCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiLyoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtbWlhIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsIlVTRVIiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJBbGljZSBVc2VyIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWxpY2UiLCJnaXZlbl9uYW1lIjoiQWxpY2UiLCJmYW1pbHlfbmFtZSI6IlVzZXIiLCJlbWFpbCI6ImFsaWNlQGV4YW1wbGUuY29tIn0.gb13QDd5UuZVeF3T5y4FW8WJOf-wlDB-eJnP2F1pmmtRK-JnJDErBQXR-DNnL6hwmh6skfxlCVv7qmw9_0ORjqAqWTEKU5EWvlfyWUffSYfgxoARokydLmI-2IVJDDLginq_9nz2NeG-wiTBK6lTC1pDWyUu9HbFLe51Gx_mLQTmFy2YMYLpi5kdmB7U2LpSLZSRFPFK4CbF9jrJ7CS_3JAEuXVLfjV5QTEAsXHVcM4e7y0JYuiTF1VXjSwsatqjFxy5xPAxvRStPuKhZ36RlbSkEIyiFnm80A7oVPTA2iRjt8yddN2_gGTf4yfT8XWVfmdZLz1WeIVf2DO_bTifJw",
+			"enabled": true
+		},
+		{
+			"key": "admin_user_access_token",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJmM1RfeHpibHh1NXlFemcySy1pcmxGekp2RHRuMFJCLUJtcktzcG1qTWxnIn0.eyJleHAiOjE3NjI2NzgyMjUsImlhdCI6MTc2MjY3NzkyNSwianRpIjoiOTYxNjM1YzEtYzMyNi00MzQ5LWJiYzYtY2Y1YzViNTVhYjFiIiwiaXNzIjoiaHR0cDovL2tleWNsb2FrOjgwODAvcmVhbG1zL21pYSIsImF1ZCI6WyJyZWFsbS1tYW5hZ2VtZW50IiwiYnJva2VyIiwiYWNjb3VudCJdLCJzdWIiOiJmMzk5YTAyMy0xOGEyLTQ2NjgtOTUxMC0zMzUwMTgxZmVjZTUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJwb3N0bWFuLWNsaWVudCIsInNpZCI6ImQ1YjBmN2NjLWQ1M2MtNDEyMC04NDk1LTQyNmU0ZTM1OGRiNCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiLyoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtbWlhIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsIkFETUlOIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsicmVhbG0tbWFuYWdlbWVudCI6eyJyb2xlcyI6WyJ2aWV3LWlkZW50aXR5LXByb3ZpZGVycyIsInZpZXctcmVhbG0iLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsInJlYWxtLWFkbWluIiwiY3JlYXRlLWNsaWVudCIsIm1hbmFnZS11c2VycyIsInF1ZXJ5LXJlYWxtcyIsInZpZXctYXV0aG9yaXphdGlvbiIsInF1ZXJ5LWNsaWVudHMiLCJxdWVyeS11c2VycyIsIm1hbmFnZS1ldmVudHMiLCJtYW5hZ2UtcmVhbG0iLCJ2aWV3LWV2ZW50cyIsInZpZXctdXNlcnMiLCJ2aWV3LWNsaWVudHMiLCJtYW5hZ2UtYXV0aG9yaXphdGlvbiIsIm1hbmFnZS1jbGllbnRzIiwicXVlcnktZ3JvdXBzIl19LCJicm9rZXIiOnsicm9sZXMiOlsicmVhZC10b2tlbiJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsInZpZXctYXBwbGljYXRpb25zIiwidmlldy1jb25zZW50Iiwidmlldy1ncm91cHMiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsIm1hbmFnZS1jb25zZW50IiwiZGVsZXRlLWFjY291bnQiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJCb2IgQWRtaW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJib2IiLCJnaXZlbl9uYW1lIjoiQm9iIiwiZmFtaWx5X25hbWUiOiJBZG1pbiIsImVtYWlsIjoiYm9iQGV4YW1wbGUuY29tIn0.JV3Li23zoVBB3lutIuIuV3pK_TzTkdHKexzHt6LJ0hjABhA2IgXH23sqxJoiMyKB0nLqv5iXKTqCSVIXqD3BQT1FWdursTZ_QrfusmoGw7vgrxo9DomYHGX9mLIldnhesYLdyq19WwW-VDh5BcemvTzxjIqQrsV-4iYl4qBAp5a7kYu269uOOVA8JBVdOK9zdsrZQsEe5BuLB97DNMGKa-ncAPLVZNDEAwlru6rsaKBkqbETDDlWbaQL10OGIzrliAcJllCtT5wx7PM1PskiuCL3-UVn3cuHFxu1Y4iKMYVdUtgXd526-Rm1hhwv4D5kfIkRwcWCySx0nHou1AUApw",
+			"enabled": true
+		},
+		{
+			"key": "admin_client_access_token",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJmM1RfeHpibHh1NXlFemcySy1pcmxGekp2RHRuMFJCLUJtcktzcG1qTWxnIn0.eyJleHAiOjE3NjI2NzgyMzMsImlhdCI6MTc2MjY3NzkzMywianRpIjoiZDM0OTY5NzAtNmMwMi00MmMyLWI3YmItMjRjNjlhNDAxZTA4IiwiaXNzIjoiaHR0cDovL2tleWNsb2FrOjgwODAvcmVhbG1zL21pYSIsImF1ZCI6WyJyZWFsbS1tYW5hZ2VtZW50IiwiYWNjb3VudCJdLCJzdWIiOiJiMzg2ZjU1Ny04YjllLTQyYmItOTNlMy02MDg2OTY3YTljNTciLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJhZG1pbi1jbGktbG9jYWwiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW1pYSIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJyZWFsbS1tYW5hZ2VtZW50Ijp7InJvbGVzIjpbInZpZXctaWRlbnRpdHktcHJvdmlkZXJzIiwidmlldy1yZWFsbSIsIm1hbmFnZS1pZGVudGl0eS1wcm92aWRlcnMiLCJpbXBlcnNvbmF0aW9uIiwicmVhbG0tYWRtaW4iLCJjcmVhdGUtY2xpZW50IiwibWFuYWdlLXVzZXJzIiwicXVlcnktcmVhbG1zIiwidmlldy1hdXRob3JpemF0aW9uIiwicXVlcnktY2xpZW50cyIsInF1ZXJ5LXVzZXJzIiwibWFuYWdlLWV2ZW50cyIsIm1hbmFnZS1yZWFsbSIsInZpZXctZXZlbnRzIiwidmlldy11c2VycyIsInZpZXctY2xpZW50cyIsIm1hbmFnZS1hdXRob3JpemF0aW9uIiwibWFuYWdlLWNsaWVudHMiLCJxdWVyeS1ncm91cHMiXX0sImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoiZW1haWwgcHJvZmlsZSIsImNsaWVudEhvc3QiOiIxNzIuMTkuMC4xMCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicHJlZmVycmVkX3VzZXJuYW1lIjoic2VydmljZS1hY2NvdW50LWFkbWluLWNsaS1sb2NhbCIsImNsaWVudEFkZHJlc3MiOiIxNzIuMTkuMC4xMCIsImNsaWVudF9pZCI6ImFkbWluLWNsaS1sb2NhbCJ9.C42nLW67MXwWkytKDgJlwz5c0xqdbPROVAb-IP9xIJCsY6nrvah27wul_TBRDcuI4DgHMVf1wccLn1IEsWlJNOEJJb3ghmKzQxpWk-PUerv8uu3lrI06LicR5-TgcdTA0T8TFJMYiIEVkl-X2W4bJTmZ70fMHzbsxeO7rVu9kQvXwe9SRvWDH-Xm5sUh3qoM54-AitCg3764uvbzF0pQMyIyDoOKHRAcUwAuRoR-6r3T-kZVBjdnHekQlIhS2lx483ejTb1BqdOqi5mGT5f6auskbHNfTJ0B4X8iWY-QB5ueIg75-pHxJBlDFiY5i4AAK3N4nRsr-8XNA-eWzdE0ZQ",
+			"enabled": true
+		},
+		{
+			"key": "role_USER",
+			"value": "{\"id\":\"a00eb8f1-b248-4b59-a615-c47b002107f2\",\"name\":\"USER\",\"description\":\"\",\"composite\":false,\"clientRole\":false,\"containerId\":\"fe37672c-3631-423f-8ba1-3559e24ddc3c\",\"attributes\":{}}",
+			"enabled": true
+		},
+		{
+			"key": "new_user_id",
+			"value": "ba05e732-9e60-4f91-a538-3c76fa93aa76",
+			"enabled": true
+		},
+		{
+			"key": "user_refresh_token",
+			"value": "eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1ODgxOTMwMC1kYzlhLTQ2ZDgtOTc5Zi01Y2JkNDFiMWUzNmUifQ.eyJleHAiOjE3NjI2Nzk2ODgsImlhdCI6MTc2MjY3Nzg4OCwianRpIjoiZjI4NmNiMWEtM2NmMC00YmFiLWFlM2ItNjU5MGM3MjJkNjI3IiwiaXNzIjoiaHR0cDovL2tleWNsb2FrOjgwODAvcmVhbG1zL21pYSIsImF1ZCI6Imh0dHA6Ly9rZXljbG9hazo4MDgwL3JlYWxtcy9taWEiLCJzdWIiOiIzNzY4ZDc2Ny01Y2NjLTRhYmMtYTAyZS05MWUxNWI1OGQwMGEiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoicG9zdG1hbi1jbGllbnQiLCJzaWQiOiI4ZWJmYTI4Mi0zZjVjLTRjZmMtYjQ3NS1iMjM0Yjg3NTk0NTgiLCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIGJhc2ljIHdlYi1vcmlnaW5zIGFjciByb2xlcyJ9.wsk6pmymLGCGfRoKlaABS_dTKSoK1_LoyAjGuA33m6cKFq0rwI9Jlco00hfW_Vl5hrMl4BLCY6oGRlRLpTcewA",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "admin_user_refresh_token",
+			"value": "eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1ODgxOTMwMC1kYzlhLTQ2ZDgtOTc5Zi01Y2JkNDFiMWUzNmUifQ.eyJleHAiOjE3NjI2Nzk3MjUsImlhdCI6MTc2MjY3NzkyNSwianRpIjoiNjgwNjcyOTAtZmZkMC00MGI4LTlhMGEtNGJjMTFlOTliOTkxIiwiaXNzIjoiaHR0cDovL2tleWNsb2FrOjgwODAvcmVhbG1zL21pYSIsImF1ZCI6Imh0dHA6Ly9rZXljbG9hazo4MDgwL3JlYWxtcy9taWEiLCJzdWIiOiJmMzk5YTAyMy0xOGEyLTQ2NjgtOTUxMC0zMzUwMTgxZmVjZTUiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoicG9zdG1hbi1jbGllbnQiLCJzaWQiOiJkNWIwZjdjYy1kNTNjLTQxMjAtODQ5NS00MjZlNGUzNThkYjQiLCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIGJhc2ljIHdlYi1vcmlnaW5zIGFjciByb2xlcyJ9.a8Dg93xZrYhaUhxZ_MwxiFJbNObDa88Rdv14amM14CS-6BjZKMnpJCM-1pze3XuerijDuak_0W5qoPe2hDEQAQ",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "demo_name",
+			"value": "Demo Widget 928776",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "demo_sku",
+			"value": "DEMO-928776",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "order_product_id",
+			"value": "1",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "order_qty",
+			"value": "1",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "created_product_id",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "cb_demo_name",
+			"value": "CB Fallback Demo 062736",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "cb_demo_sku",
+			"value": "CBF-062736",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "cb_product_id",
+			"value": "4e54e444-d379-4bb4-a36e-2eb9e03f9dac",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "cb_order_id",
+			"value": "bdd3673f-ef22-4b2f-ba7a-8974ab8421f0",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "cb_order_number",
+			"value": "ORD-71525182",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "happy_total",
+			"value": "0",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-11-09T08:59:14.260Z",
+	"_postman_exported_using": "Postman/11.70.6"
+}

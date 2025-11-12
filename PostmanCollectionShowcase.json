@@ -1,0 +1,634 @@
+{
+	"info": {
+		"_postman_id": "c430a5ca-2d03-4ff0-b014-1a61c50a95e6",
+		"name": "Project Feature Showcase Phase 2",
+		"description": "Final collection showcasing service discovery, gateway, resiliency, and security via Keycloak. All service calls go through the API gateway. Eureka API is called directly on 8761.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48037426",
+		"_collection_link": "https://rgomez2000-1652830.postman.co/workspace/Ruben-Gomez's-Workspace~7a8e55f8-5b14-4e16-8123-91b5360294fe/collection/48037426-c430a5ca-2d03-4ff0-b014-1a61c50a95e6?action=share&source=collection_link&creator=48037426"
+	},
+	"item": [
+		{
+			"name": "0) Discovery & Health",
+			"item": [
+				{
+					"name": "Gateway Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actuator/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Gateway Routes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actuator/gateway/routes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"actuator",
+								"gateway",
+								"routes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eureka – Apps",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{eureka_url}}/eureka/apps",
+							"host": [
+								"{{eureka_url}}"
+							],
+							"path": [
+								"eureka",
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eureka – catalog-service",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{eureka_url}}/eureka/apps/catalog-service",
+							"host": [
+								"{{eureka_url}}"
+							],
+							"path": [
+								"eureka",
+								"apps",
+								"catalog-service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eureka – order-service",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{eureka_url}}/eureka/apps/order-service",
+							"host": [
+								"{{eureka_url}}"
+							],
+							"path": [
+								"eureka",
+								"apps",
+								"order-service"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "1) OIDC through Gateway",
+			"item": [
+				{
+					"name": "OpenID Configuration",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{kc_base}}/realms/{{realm}}/.well-known/openid-configuration",
+							"host": [
+								"{{kc_base}}"
+							],
+							"path": [
+								"realms",
+								"{{realm}}",
+								".well-known",
+								"openid-configuration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "JWK Public keys",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{kc_base}}/realms/{{realm}}/protocol/openid-connect/certs",
+							"host": [
+								"{{kc_base}}"
+							],
+							"path": [
+								"realms",
+								"{{realm}}",
+								"protocol",
+								"openid-connect",
+								"certs"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2) Bearer Token Auth",
+			"item": [
+				{
+					"name": "Get USER Token (alice)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let d=pm.response.json();",
+									"pm.environment.set('user_access_token', d.access_token || '');",
+									"pm.environment.set('user_refresh_token', d.refresh_token || '');",
+									"pm.test('200 OK', ()=>pm.response.to.have.status(200));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "{{client_id}}"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}"
+								},
+								{
+									"key": "grant_type",
+									"value": "password"
+								},
+								{
+									"key": "username",
+									"value": "{{alice_username}}"
+								},
+								{
+									"key": "password",
+									"value": "{{alice_password}}"
+								},
+								{
+									"key": "scope",
+									"value": "openid"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{token_url}}",
+							"host": [
+								"{{token_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get ADMIN Token (bob)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let d=pm.response.json();",
+									"pm.environment.set('admin_user_access_token', d.access_token || '');",
+									"pm.environment.set('admin_user_refresh_token', d.refresh_token || '');",
+									"pm.test('200 OK', ()=>pm.response.to.have.status(200));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "{{client_id}}"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}"
+								},
+								{
+									"key": "grant_type",
+									"value": "password"
+								},
+								{
+									"key": "username",
+									"value": "{{bob_username}}"
+								},
+								{
+									"key": "password",
+									"value": "{{bob_password}}"
+								},
+								{
+									"key": "scope",
+									"value": "openid"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{token_url}}",
+							"host": [
+								"{{token_url}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3) Admin User Control",
+			"item": [
+				{
+					"name": "Get Admin Client Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let d=pm.response.json();",
+									"pm.environment.set('admin_client_access_token', d.access_token || '');",
+									"pm.test('200 OK', ()=>pm.response.to.have.status(200));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "{{admin_client_id}}"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{admin_client_secret}}"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{token_url}}",
+							"host": [
+								"{{token_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register User (create)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Created', ()=>pm.expect([201,204]).to.include(pm.response.code));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_client_access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\": \"{{new_username}}\", \"email\": \"{{new_email}}\", \"enabled\": true, \"credentials\": [{\"type\": \"password\", \"value\": \"{{new_password}}\", \"temporary\": false}]}"
+						},
+						"url": {
+							"raw": "{{admin_users_url}}",
+							"host": [
+								"{{admin_users_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find New User ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let arr=pm.response.json();",
+									"pm.environment.set('new_user_id', (arr && arr.length>0)?arr[0].id:'');",
+									"pm.test('User found', ()=>pm.expect(pm.environment.get('new_user_id')).to.not.equal(''));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_client_access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{admin_users_url}}?username={{new_username}}",
+							"host": [
+								"{{admin_users_url}}"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "{{new_username}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get USER Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('role_USER', pm.response.text());",
+									"pm.test('200 OK', ()=>pm.response.to.have.status(200));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_client_access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{kc_base}}/admin/realms/{{realm}}/roles/USER",
+							"host": [
+								"{{kc_base}}"
+							],
+							"path": [
+								"admin",
+								"realms",
+								"{{realm}}",
+								"roles",
+								"USER"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign USER Role to New User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Role assigned', ()=>pm.expect([204,200]).to.include(pm.response.code));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_client_access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[{{role_USER}}]"
+						},
+						"url": {
+							"raw": "{{admin_users_url}}/{{new_user_id}}/role-mappings/realm",
+							"host": [
+								"{{admin_users_url}}"
+							],
+							"path": [
+								"{{new_user_id}}",
+								"role-mappings",
+								"realm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Direct Password Reset (no email)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Password reset', ()=>pm.expect([204,200]).to.include(pm.response.code));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_client_access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"type\": \"password\", \"value\": \"{{reset_password}}\", \"temporary\": false}"
+						},
+						"url": {
+							"raw": "{{admin_users_url}}/{{new_user_id}}/reset-password",
+							"host": [
+								"{{admin_users_url}}"
+							],
+							"path": [
+								"{{new_user_id}}",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4) Authorization Check",
+			"item": [
+				{
+					"name": "GET Products (USER)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/catalog/api/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"catalog",
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Product (ADMIN)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let pid = pm.environment.get('created_product_id');\r",
+									"if (!pid || pid === '') {\r",
+									"  pid = pm.environment.get('sample_product_id') || '1';\r",
+									"}\r",
+									"pm.environment.set('order_product_id', pid);\r",
+									"\r",
+									"pm.environment.set('order_qty', pm.environment.get('order_qty') || '1');\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_user_access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{demo_name}}\",\r\n  \"price\": 12.99,\r\n  \"sku\": \"{{demo_sku}}\"\r\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/catalog/api/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"catalog",
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

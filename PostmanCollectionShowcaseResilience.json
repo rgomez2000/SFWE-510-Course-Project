@@ -1,0 +1,724 @@
+{
+	"info": {
+		"_postman_id": "146af253-d199-4bd0-b169-dc036ca723bf",
+		"name": "Project Phase 2 Resiliency Checks",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48037426",
+		"_collection_link": "https://rgomez2000-1652830.postman.co/workspace/Ruben-Gomez's-Workspace~7a8e55f8-5b14-4e16-8123-91b5360294fe/collection/48037426-146af253-d199-4bd0-b169-dc036ca723bf?action=share&source=collection_link&creator=48037426"
+	},
+	"item": [
+		{
+			"name": "Checks",
+			"item": [
+				{
+					"name": "Gateway Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actuator/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Order – CB list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_user_access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/actuator/circuitbreakers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"actuator",
+								"circuitbreakers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Order – CB metrics (name=catalogService)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_user_access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/actuator/metrics/resilience4j.circuitbreaker.calls?tag=name:catalogService",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"actuator",
+								"metrics",
+								"resilience4j.circuitbreaker.calls"
+							],
+							"query": [
+								{
+									"key": "tag",
+									"value": "name:catalogService"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Check product creation",
+			"item": [
+				{
+					"name": "Create product as Admin",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const s = Date.now().toString().slice(-6);",
+									"pm.environment.set('cb_demo_name', `CB Fallback Demo ${s}`);",
+									"pm.environment.set('cb_demo_sku',  `CBF-${s}`);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('201/200', ()=> pm.expect([200,201]).to.include(pm.response.code));",
+									"let j={}; try{ j = pm.response.json(); }catch(e){}",
+									"pm.environment.set('cb_product_id', j.id || '');",
+									"pm.test('Captured product id', ()=> pm.expect(pm.environment.get('cb_product_id')).to.not.equal(''));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_user_access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{cb_demo_name}}\",\n  \"price\": 9.99,\n  \"sku\": \"{{cb_demo_sku}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/catalog/api/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"catalog",
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get product (USER)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/catalog/api/products/{{cb_product_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"catalog",
+								"api",
+								"products",
+								"{{cb_product_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Normal Request",
+			"item": [
+				{
+					"name": "POST Order as Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('201/200', ()=> pm.expect([200,201]).to.include(pm.response.code));",
+									"let j={}; try{ j = pm.response.json(); }catch(e){}",
+									"pm.environment.set('cb_order_id', j.id || '');",
+									"if (j.totalAmount !== undefined) { pm.environment.set('happy_total', String(j.totalAmount)); }",
+									"pm.test('Order id captured', ()=> pm.expect(pm.environment.get('cb_order_id')).to.not.equal(''));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_user_access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderNumber\": \"{{cb_order_number}}\",\n  \"items\": [ { \"productId\": \"{{cb_product_id}}\", \"qty\": 1 } ]\n}\n"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/api/orders/place?slow=false&fail=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"api",
+								"orders",
+								"place"
+							],
+							"query": [
+								{
+									"key": "slow",
+									"value": "false"
+								},
+								{
+									"key": "fail",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Orders (USER)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/api/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Circuit Breaker trip",
+			"item": [
+				{
+					"name": "POST failure run 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Expect 5xx or 200 fallback depending on state', ()=> pm.expect([200,500,502,503]).to.include(pm.response.code));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"if (!pm.environment.get('cb_order_number')) {",
+									"  const suf = Date.now().toString().slice(-8);",
+									"  pm.environment.set('cb_order_number', `ORD-${suf}`);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_user_access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderNumber\": \"{{cb_order_number}}\",\n  \"currency\": \"USD\",\n  \"items\": [\n    { \"productId\": \"{{cb_product_id}}\", \"qty\": 1 }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/api/orders/place?slow=true&fail=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"api",
+								"orders",
+								"place"
+							],
+							"query": [
+								{
+									"key": "slow",
+									"value": "true"
+								},
+								{
+									"key": "fail",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST failure run 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Expect 5xx or 200 fallback depending on state', ()=> pm.expect([200,500,502,503]).to.include(pm.response.code));"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (!pm.environment.get('cb_order_number')) {",
+									"  const suf = Date.now().toString().slice(-8);",
+									"  pm.environment.set('cb_order_number', `ORD-${suf}`);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_user_access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderNumber\": \"{{cb_order_number}}\",\n  \"items\": [\n    { \"productId\": \"{{cb_product_id}}\", \"qty\": 1 }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/api/orders/place?slow=true&fail=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"api",
+								"orders",
+								"place"
+							],
+							"query": [
+								{
+									"key": "slow",
+									"value": "true"
+								},
+								{
+									"key": "fail",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST failure run 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Expect 5xx or 200 fallback depending on state', ()=> pm.expect([200,500,502,503]).to.include(pm.response.code));"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (!pm.environment.get('cb_order_number')) {",
+									"  const suf = Date.now().toString().slice(-8);",
+									"  pm.environment.set('cb_order_number', `ORD-${suf}`);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_user_access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderNumber\": \"{{cb_order_number}}\",\n  \"items\": [\n    { \"productId\": \"{{cb_product_id}}\", \"qty\": 1 }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/api/orders/place?slow=true&fail=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"api",
+								"orders",
+								"place"
+							],
+							"query": [
+								{
+									"key": "slow",
+									"value": "true"
+								},
+								{
+									"key": "fail",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST failure run 4",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Expect 5xx or 200 fallback depending on state', ()=> pm.expect([200,500,502,503]).to.include(pm.response.code));"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (!pm.environment.get('cb_order_number')) {",
+									"  const suf = Date.now().toString().slice(-8);",
+									"  pm.environment.set('cb_order_number', `ORD-${suf}`);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_user_access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderNumber\": \"{{cb_order_number}}\",\n  \"items\": [\n    { \"productId\": \"{{cb_product_id}}\", \"qty\": 1 }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/api/orders/place?slow=true&fail=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"api",
+								"orders",
+								"place"
+							],
+							"query": [
+								{
+									"key": "slow",
+									"value": "true"
+								},
+								{
+									"key": "fail",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST failure run 5",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Expect 5xx or 200 fallback depending on state', ()=> pm.expect([200,500,502,503]).to.include(pm.response.code));"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (!pm.environment.get('cb_order_number')) {",
+									"  const suf = Date.now().toString().slice(-8);",
+									"  pm.environment.set('cb_order_number', `ORD-${suf}`);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_user_access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderNumber\": \"{{cb_order_number}}\",\n  \"items\": [\n    { \"productId\": \"{{cb_product_id}}\", \"qty\": 1 }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/api/orders/place?slow=true&fail=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"api",
+								"orders",
+								"place"
+							],
+							"query": [
+								{
+									"key": "slow",
+									"value": "true"
+								},
+								{
+									"key": "fail",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "metrics check after failures",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_user_access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/actuator/metrics/resilience4j.circuitbreaker.calls?tag=name:catalogService",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"actuator",
+								"metrics",
+								"resilience4j.circuitbreaker.calls"
+							],
+							"query": [
+								{
+									"key": "tag",
+									"value": "name:catalogService"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fallback Demonstration",
+			"item": [
+				{
+					"name": "POST with fallback return",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"let code = pm.response.code;",
+									"pm.test('Fallback likely engaged', ()=> pm.expect([200,429]).to.include(code));",
+									"let j={}; try{ j = pm.response.json(); }catch(e){}",
+									"if (j && j.totalAmount !== undefined) {",
+									"  // With fallback product price=0, total should be 0",
+									"  pm.test('Total is 0 due to fallback', ()=> pm.expect(Number(j.totalAmount)).to.equal(0));",
+									"}"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (!pm.environment.get('cb_order_number')) {",
+									"  const suf = Date.now().toString().slice(-8);",
+									"  pm.environment.set('cb_order_number', `ORD-${suf}`);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_user_access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderNumber\": \"{{cb_order_number}}\",\n  \"items\": [\n    { \"productId\": \"{{cb_product_id}}\", \"qty\": 1 }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/api/orders/place?slow=true&fail=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"api",
+								"orders",
+								"place"
+							],
+							"query": [
+								{
+									"key": "slow",
+									"value": "true"
+								},
+								{
+									"key": "fail",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"if (!pm.environment.get('cb_demo_name')) pm.environment.set('cb_demo_name', 'CB Fallback Demo');",
+					"if (!pm.environment.get('cb_demo_sku')) pm.environment.set('cb_demo_sku', 'CBF-DEMO');"
+				]
+			}
+		}
+	]
+}
