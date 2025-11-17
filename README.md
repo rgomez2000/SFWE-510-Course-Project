@@ -2,7 +2,7 @@
 
 # Overview
 
-This project is built for my SFWE 510 course, developing a cloud-native e-commerce system. The goal is a modular microservices setup with a configuration server, two domain services, CRUD REST APIs, containerization, and two runtime profiles (dev and prod).
+This project is built to demonstrate my understanding of Java, developing a cloud-native e-commerce system. The goal is a modular microservices setup with a configuration server, two domain services, CRUD REST APIs, containerization, and two runtime profiles (dev and prod).
 
 # Services
 
